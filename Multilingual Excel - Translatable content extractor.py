@@ -11,8 +11,8 @@ from functools import lru_cache
 DetectorFactory.seed = 0
 
 # Configuration: input file, output directory, output file name, and how often to yield control.
-input_file = 'C:\Script\VELUX master glossary_LB_current upload_03.01.2025.xlsx'
-output_dir = 'C:/Script'  # Change this to your desired directory
+input_file = 'input.xlsx'
+output_dir = 'output'  # Change this to your desired directory
 output_filename = 'translated_output.xlsx'
 YIELD_EVERY = 500  # every 500 rows, yield control
 
