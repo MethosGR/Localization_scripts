@@ -1,0 +1,21 @@
+Example Usage
+Command-Line Arguments
+bash
+Copy
+python script.py input.xlsx output.xlsx --source de --targets en,pl,cs --metadata Teaserart,Überschrift,Reitername
+JSON Config File
+Create a config.json file:
+
+json
+Copy
+{
+  "source_lang": "de",
+  "target_langs": ["en", "pl", "cs"],
+  "metadata_fields": ["Teaserart", "Überschrift", "Reitername"]
+}
+Run the script with the config file:
+
+bash
+Copy
+python script.py input.xlsx output.xlsx --config config.json
+Output
