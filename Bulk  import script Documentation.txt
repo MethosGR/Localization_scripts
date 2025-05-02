@@ -1,0 +1,175 @@
+Phrase TMS Bulk Import Script Documentation
+Version: 2.0 (Progress Bar Enhanced)
+Last Updated: [Date]
+
+1. Prerequisites
+1.1 System Requirements
+Python 3.8+ (tested on 3.8, 3.9, 3.10)
+
+RAM: Minimum 512MB (optimized for low memory usage)
+
+Disk Space: 50MB free
+
+Network: HTTPS access to cloud.memsource.com
+
+1.2 Software Dependencies
+Install these packages using pip:
+
+bash
+pip install \
+  requests==2.31.0 \
+  tqdm==4.66.1 \
+  python-dotenv==1.0.0 \
+  urllib3==1.26.18
+
+1.3 Phrase TMS Requirements
+Valid API credentials (Admin-level access)
+
+Existing domain structure (if creating subdomains)
+
+API access enabled for your account
+
+
+2. Setup Instructions
+
+2.1 Environment Configuration
+Create a project folder:
+bash
+mkdir phrase-import && cd phrase-import
+
+Add credentials to .env file:
+ini
+# .env
+PHRASE_USER="your.email@organization.com"
+PHRASE_PASSWORD="yourSecurePassword123!"
+
+Set file permissions (Linux/macOS):
+bash
+chmod 600 .env
+
+2.2 CSV File Preparation
+File Requirements:
+
+UTF-8 encoding
+
+First row as header
+
+Columns (case-insensitive):
+Column Name	            Required For	        Example Value
+type	                All	                    domain
+name	                All	                    Marketing Team
+timezone	            Domains	                Europe/Paris
+parent_domain_id	    Subdomains	            DOM-1234
+client_id	            Business Units	        CLIENT-5678
+
+Sample CSV (structure.csv):
+csv
+type,name,timezone,parent_domain_id,client_id
+domain,EMEA Division,Europe/Berlin,,
+subdomain,France Team,,DOM-9876,
+client,Acme Corporation,,,
+business_unit,Legal Dept,,,CLIENT-123
+
+
+3. Execution Guide
+
+3.1 Basic Command
+bash
+python import_tool.py structure.csv
+Expected Output:
+Progress Bar Example
+Real-time progress with success/error counts
+
+3.2 Advanced Options
+Flag	            Description	                                Example
+--delimiter	        CSV delimiter character	                    --delimiter=';'
+--dry-run	        Validate without creating entities	        --dry-run
+--help	            Show help message	                        python import_tool.py -h
+
+Dry Run Example:
+bash
+python import_tool.py test_data.csv --delimiter=',' --dry-run
+
+
+4. Post-Execution Steps
+
+4.1 Verify Results
+Check bulk_import.log:
+bash
+tail -f bulk_import.log
+
+Validate in Phrase TMS UI:
+Domains: Admin Console → Domains
+Clients: Admin Console → Clients
+
+4.2 Handle Errors
+Retry Failed Items:
+
+Create failed_rows.csv from log entries
+bash
+grep "ERROR" bulk_import.log > failed_rows.csv
+
+Re-run with filtered file
+bash
+python import_tool.py failed_rows.csv
+
+Common Error Codes:
+Code	    Meaning	                    Solution
+401	        Invalid credentials	        Verify .env file
+403	        Permission denied	        Check admin rights
+409	        Entity already exists	    Update CSV with unique IDs
+500	        Server error	            Retry after 5 minutes
+
+
+5. Performance Optimization
+
+5.1 For Large Files (>10,000 Rows)
+Split CSV into chunks:
+
+bash
+split -l 1000 large_file.csv chunk_
+Parallel processing (GNU Parallel):
+
+bash
+parallel -j 4 "python import_tool.py {}" ::: chunk_*
+
+5.2 Memory Management
+Windows Task Manager: Monitor Python process memory
+
+Linux/macOS:
+
+bash
+top -pid $(pgrep -f import_tool.py)
+
+
+6. Security Best Practices
+
+6.1 Credential Safety
+Rotate API passwords quarterly
+
+Never commit .env to version control
+
+Use environment variables in production:
+
+bash
+export PHRASE_USER="user@company.com"
+export PHRASE_PASSWORD="..."
+
+6.2 Network Security
+Whitelist Phrase TMS IP ranges:
+
+52.28.160.0/19
+52.57.224.0/19
+Use VPN for on-premise deployments
+
+
+7. Support
+
+7.1 Troubleshooting Guide
+Symptom	                    Diagnostic Command
+Slow performance	        ping cloud.memsource.com
+Connection failures	        curl -v https://cloud.memsource.com/web/api/v2/auth/login
+Encoding errors	            file -I structure.csv
+
+7.2 Contact Information
+Phrase TMS Support: support@phrase.com
