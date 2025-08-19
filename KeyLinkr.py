@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 BASE_URL = "https://api.phrase.com/v2"
 
 # --- Hardcoded API token and parent project ID ---
-HARD_CODED_API_TOKEN = "REMOVED"
+HARD_CODED_API_TOKEN = "<Your_API_TOOKEN>"
 # Replace the string below with your actual parent project ID.
 HARD_CODED_PARENT_PROJECT_ID = "b030ce2bb69df7f099af17804e846f7a"
 
@@ -355,3 +355,4 @@ if __name__ == "__main__":
         asyncio.run(main(args))
     except KeyboardInterrupt:
         print("Execution interrupted by user. Exiting...")
+
